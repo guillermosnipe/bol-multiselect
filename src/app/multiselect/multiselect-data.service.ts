@@ -5,8 +5,30 @@ import { InMemoryDbService } from 'angular-in-memory-web-api';
   providedIn: 'root'
 })
 export class MultiSelectDataService implements InMemoryDbService {
+
+  decodeHTMLEntities(text) {
+    const entities = [
+      ['amp', '&'],
+      ['apos', '\''],
+      ['#x27', '\''],
+      ['#x2F', '/'],
+      ['#39', '\''],
+      ['#47', '/'],
+      ['lt', '<'],
+      ['gt', '>'],
+      ['nbsp', ' '],
+      ['quot', '"']
+    ];
+
+    for (let i = 0, max = entities.length; i < max; ++i) {
+      text = text.replace(new RegExp('&' + entities[i][0] + ';', 'g'), entities[i][1]);
+    }
+    return text;
+  }
+
   createDb() {
-    const categories = [
+    const categories = [];
+    const _categories = [
       'Literatuur &amp; Romans',
       'Thrillers',
       'Fantasy',
@@ -437,6 +459,15 @@ export class MultiSelectDataService implements InMemoryDbService {
       'Alles voor buitenvogels',
       'Dier- &amp; Drogisterijacties'
     ];
+
+    _categories.sort( (a, b) => {
+      return a.toLowerCase().localeCompare(b.toLowerCase());
+    }).forEach((category, index) =>
+      categories.push(
+        Object.assign({}, { id: index, name: ( category.indexOf('&') > -1 ) ? this.decodeHTMLEntities(category) : category })
+      )
+    );
+
     return { categories };
   }
 }
