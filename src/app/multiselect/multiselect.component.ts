@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { range, zip, of, Observable, Subject } from 'rxjs';
+import { MultiSelectService, ProductCategory } from './multiselect.service';
 
 @Component({
   selector: 'bol-multiselect',
@@ -7,7 +9,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MultiselectComponent implements OnInit {
 
-  constructor() { }
+  categories$: Observable<Array<ProductCategory>>;
+
+  constructor(private data: MultiSelectService) {
+    this.categories$ = data.categories$;
+  }
 
   ngOnInit() {
   }
