@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { range, zip, of, Observable, Subject } from 'rxjs';
 import { MultiSelectService, ProductCategory } from './multiselect.service';
 
 @Component({
@@ -9,13 +8,25 @@ import { MultiSelectService, ProductCategory } from './multiselect.service';
 })
 export class MultiselectComponent implements OnInit {
 
-  categories$: Observable<Array<ProductCategory>>;
+  pageSize = 100;
+  _page = 1;
+  _categories: ProductCategory[];
+  categories: ProductCategory[] = [];
 
-  constructor(private data: MultiSelectService) {
-    this.categories$ = data.categories$;
+  constructor(private dataService: MultiSelectService) { }
+
+  ngOnInit(): void {
+    this.dataService.categories$.subscribe(
+      data => {
+        this._categories = data;
+        this.getBatchOfCategories();
+      }
+    );
   }
 
-  ngOnInit() {
+  getBatchOfCategories(page: number = this._page, pageSize: number = this.pageSize) {
+    this.categories = this._categories.filter((item, index) => index < page * pageSize);
+    this._page = this._page + 1;
   }
 
 }

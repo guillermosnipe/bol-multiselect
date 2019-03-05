@@ -468,7 +468,7 @@ export class MultiSelectDataService implements InMemoryDbService {
       )
     );
 
-    return { categories };
+    return { categories};
   }
 }
 

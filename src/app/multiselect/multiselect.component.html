@@ -1,3 +1,9 @@
-<p *ngFor="let category of categories$ | async">
+<!-- <p *ngFor="let category of categories$ | async">
   {{ category.id }} | {{ category.name }}
-</p>
+</p> -->
+<ul>
+  <li *ngFor="let category of categories">
+    {{ category.name }}
+  </li>
+</ul>
+<button (click)="getBatchOfCategories()">Fetch more results</button>
