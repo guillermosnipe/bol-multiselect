@@ -2,6 +2,7 @@
   <h3>Productgroep</h3>
   <input type="text" placeholder="Zoek op..." class="multiselect-form--search" tabindex="0"/>
   <ul class="multiselect-list" bolScrollTracker (scrollingFinished)="onScrollingFinished($event)">
+    <!-- TODO: Add a preloader -->
     <li formArrayName="categories" *ngFor="let category of formCategories.controls; let i = index; trackBy: categoryId" class="multiselect-list--option">
         <input id="category-{{ i }}" type="checkbox" [formControlName]="i" />
         <label for="category-{{ i }}">{{ categories[i].name }}</label>

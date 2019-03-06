@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MultiSelectService, ProductCategory } from './multiselect.service';
 import { FormBuilder, FormArray, FormControl, FormGroup } from '@angular/forms';
 import { CompileShallowModuleMetadata } from '@angular/compiler';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'bol-multiselect',
@@ -13,6 +14,7 @@ export class MultiselectComponent implements OnInit {
   _pageSize = 100;
   _page = 1;
   _categories: ProductCategory[];
+  _dataSubscriptionHandler: Subscription;
   categories: ProductCategory[] = [];
   categoriesForm: FormGroup;
 
@@ -37,15 +39,15 @@ export class MultiselectComponent implements OnInit {
     let categoriesInterval: Array<number>;
 
     // There are no more elements to add. Exit
-    if (this._categories.length - this.calculateCategoriesBatchLimit(page) <= (_pageSize * -1 + 1) ) {
+    if (this._categories.length - this.calculateCategoriesBatchLimit(page) <= (_pageSize * -1 + 1)) {
       return null;
     }
 
-    this.categories.push( ...this._categories.filter(
+    this.categories.push(...this._categories.filter(
       (item, index) =>
-          (page > 1) ?
-              index >= this.calculateCategoryToStartFrom(page, this._pageSize) && index < this.calculateCategoriesBatchLimit(page)
-              : index < this.calculateCategoriesBatchLimit(page)
+        (page > 1) ?
+          index >= this.calculateCategoryToStartFrom(page, this._pageSize) && index < this.calculateCategoriesBatchLimit(page)
+          : index < this.calculateCategoriesBatchLimit(page)
     ));
 
     categoriesInterval = this.calculateCategoriesInterval(this.categories, page);
@@ -75,48 +77,45 @@ export class MultiselectComponent implements OnInit {
     return [start, finish];
   }
 
-  addCheckboxes( checkboxesToAdd: Array<number> | null ) {
+  addCheckboxes(checkboxesToAdd: Array<number> | null) {
 
     if (checkboxesToAdd === null) { return false; }
 
     const [start, end] = checkboxesToAdd;
     console.log('addCheckboxes');
-    console.log( `start: ${start} end: ${end}` );
-    // this.categories.map( category => this.formCategories.push(this.fb.control(category.selected)));
+    console.log(`start: ${start} end: ${end}`);
+
     for (let i = start; i < end; i = i + 1) {
       this.formCategories.push(this.fb.control(this.categories[i].selected));
     }
   }
 
   ngOnInit(): void {
-    this.dataService.categories$.subscribe(
+    this._dataSubscriptionHandler = this.dataService.categories$.subscribe(
       data => {
         this._categories = data;
-        this.addBatchOfCategories().then( checkboxes => this.addCheckboxes(checkboxes) );
+        this.addBatchOfCategories().then(checkboxes => this.addCheckboxes(checkboxes));
       }
     );
   }
 
   onScrollingFinished() {
-    this.addBatchOfCategories().then( checkboxes => this.addCheckboxes( checkboxes ));
+    this.addBatchOfCategories().then(checkboxes => this.addCheckboxes(checkboxes));
     console.log('Scroll finished!');
     // this.addCheckboxes();
   }
 
   onSubmit(formValue) {
     const form = Object.assign({}, formValue, {
-      categories: formValue.categories.map( (category, index) => {
+      categories: formValue.categories.map((category, index) => {
         return {
           id: this.categories[index].id,
           selected: category
         };
       })
     });
-
-    console.log(form);
     console.warn(this.categoriesForm.value);
-
   }
 
-
+  // TODO: Implement onDestroy and unsubscribe
 }
