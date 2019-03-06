@@ -1,9 +1,13 @@
-<!-- <p *ngFor="let category of categories$ | async">
-  {{ category.id }} | {{ category.name }}
-</p> -->
-<ul>
-  <li *ngFor="let category of categories">
-    {{ category.name }}
-  </li>
-</ul>
-<button (click)="getBatchOfCategories()">Fetch more results</button>
+<form class="multiselect-form" [formGroup]="categoriesForm" (ngSubmit)="onSubmit()">
+  <h3>Productgroep</h3>
+  <input type="text" placeholder="Zoek op..." class="multiselect-form--search" tabindex="0"/>
+  <ul class="multiselect-list" bolScrollTracker>
+    <li formArrayName="categories" *ngFor="let category of formCategories.controls; let i = index; trackBy: categoryId" class="multiselect-list--option">
+        <input id="category-{{ i }}" type="checkbox" [formControlName]="i" />
+        <label for="category-{{ i }}">{{ categories[i].name }}</label>
+    </li>
+  </ul>
+  <button class="btn-primary--large" type="submit">Toepassen</button>
+  <button (click)="getBatchOfCategories()">Fetch more results</button>
+</form>
+{{ categoriesForm.value | json }}

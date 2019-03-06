@@ -1,0 +1,27 @@
+.btn-primary--large {
+    color: $white;
+    background: $primary-color;
+    overflow: visible;
+    box-sizing: border-box;
+    line-height: 2.5em;
+    padding: 0 1em;
+    cursor: pointer;
+    border-radius: .25em;
+    transition: background-color .25s ease-in,border .25s ease-in;
+    text-align: left;
+    border: 0;
+    border-bottom: 1px solid rgba(0,0,0,.35);
+    -webkit-appearance: none;
+    font-family: inherit;
+    font-size: 0.9em;
+    width: 100%;
+    text-align: center;
+    margin-top: 20px;
+
+    &:hover {
+      color: $white;
+      background-color: $blue-bol-light;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(0,0,0,.25);
+    }
+}

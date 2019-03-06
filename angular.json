@@ -27,7 +27,7 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "themes/bol-retail/src/index.scss"
             ],
             "scripts": [],
             "es5BrowserSupport": true

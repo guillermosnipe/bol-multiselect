@@ -11,6 +11,7 @@ const httpOptions = {
 export interface ProductCategory {
   id: number;
   name: string;
+  selected: boolean;
 }
 
 @Injectable({

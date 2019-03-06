@@ -464,7 +464,8 @@ export class MultiSelectDataService implements InMemoryDbService {
       return a.toLowerCase().localeCompare(b.toLowerCase());
     }).forEach((category, index) =>
       categories.push(
-        Object.assign({}, { id: index + 1, name: ( category.indexOf('&') > -1 ) ? this.decodeHTMLEntities(category) : category })
+        Object.assign({},
+          { id: index + 1, name: ( category.indexOf('&') > -1 ) ? this.decodeHTMLEntities(category) : category, selected: false })
       )
     );
 

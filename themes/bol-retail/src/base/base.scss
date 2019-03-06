@@ -1,0 +1,46 @@
+body {
+  font-family: $primary-font;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  box-sizing: border-box;
+}
+
+h1, h2, h3, h4 {
+  padding: 0;
+  margin: 0;
+}
+
+h3 {
+  font-weight: 300;
+  font-size: 1.1em;
+  padding: 10px 0;
+}
+
+ul {
+ list-style: none;
+ padding: 0;
+ margin: 0;
+}
+
+
+.multiselect-list::-webkit-scrollbar-track
+{
+	border-radius: 10px;
+	background-color: #F5F5F5;
+}
+
+.multiselect-list::-webkit-scrollbar
+{
+	width: 6px;
+	background-color:$gray-lighter;
+}
+
+.multiselect-list::-webkit-scrollbar-thumb
+{
+  border-radius: 10px;
+  height: 50%;
+	background-color: $gray;
+}

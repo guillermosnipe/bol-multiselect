@@ -1,0 +1,38 @@
+.multiselect-form {
+  background: $gray-lighter;
+  border: 1px solid $gray;
+  max-width: 300px;
+  border-radius: 4px;
+  padding: 10px 20px 25px;
+
+  input,
+  input::-webkit-input-placeholder {
+      font-size: 1em;
+      line-height: 3;
+      font-family: $primary-font;
+  }
+}
+
+.multiselect-form--search {
+  width: 86%;
+  height: 35px;
+  border-radius: 4px;
+  border: 1px solid #c3c1bc;
+  margin: 10px 0;
+  padding: 0 20px;
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTQiIGhlaWdodD0iMTQiIHZpZXdCb3g9IjAgMCAxNCAxNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTMuOCAxMi4ybC0zLjktNGMuNi0uOCAxLjEtMiAxLjEtMy4xIDAtMi44LTIuMy01LTUtNS0yLjggMC01IDIuMy01IDUgMCAyLjggMi4yIDUgNSA1IC44IDAgMS43LS4yIDIuMy0uNWwzLjkgNC4zYy4yLjIuNi4yLjggMGwuOC0uOGMuMy0uMy4zLS43IDAtLjl6TTYgOC4xYy0xLjcgMC0zLTEuNC0zLTMgMC0xLjcgMS40LTMgMy0zczMgMS40IDMgMy0xLjQgMy0zIDN6IiBmaWxsLXJ1bGU9ImV2ZW5vZGQiLz48L3N2Zz4=);
+  background-repeat: no-repeat;
+  background-position: 95% center;
+}
+
+.multiselect-list {
+  padding: 10px 0;
+  max-height: 280px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.multiselect-list--option {
+  margin-bottom: 24px;
+  font-size: 0.9em;
+}
