@@ -1,0 +1,7 @@
+label {
+  display: inline-block;
+}
+
+label::first-letter {
+  text-transform: uppercase;
+}
