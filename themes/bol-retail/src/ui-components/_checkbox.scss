@@ -19,7 +19,7 @@
   left: 0; top: 0;
   width: 1.25em; height: 1.25em;
   border: 2px solid #ccc;
-  background: #fff;
+  background: $white;
 }
 /* checked mark aspect */
 [type="checkbox"]:not(:checked) + label:after,
@@ -40,11 +40,13 @@
 /* checked mark aspect changes */
 [type="checkbox"]:not(:checked) + label:after {
   opacity: 0;
-  transform: scale(0);
 }
 [type="checkbox"]:checked + label:after {
   opacity: 1;
-  transform: scale(1);
+}
+
+[type="checkbox"]:checked + label {
+  color: $primary-color;
 }
 /* disabled checkbox */
 [type="checkbox"]:disabled:not(:checked) + label:before,

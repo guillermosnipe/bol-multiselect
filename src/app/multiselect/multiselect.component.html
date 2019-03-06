@@ -4,8 +4,8 @@
   <ul class="multiselect-list" bolScrollTracker (scrollingFinished)="onScrollingFinished($event)">
     <!-- TODO: Add a preloader -->
     <li formArrayName="categories" *ngFor="let category of formCategories.controls; let i = index; trackBy: categoryId" class="multiselect-list--option">
-        <input id="category-{{ i }}" type="checkbox" [formControlName]="i" />
-        <label for="category-{{ i }}">{{ categories[i].name }}</label>
+        <input id="{{ i }}" type="checkbox" [formControlName]="i" (change)="onCheckChange($event)"/>
+        <label for="{{ i }}">{{ categories[i].name }}</label>
     </li>
   </ul>
   <button class="btn-primary--large" type="submit">Toepassen</button>

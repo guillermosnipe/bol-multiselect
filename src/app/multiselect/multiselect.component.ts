@@ -28,6 +28,51 @@ export class MultiselectComponent implements OnInit {
     return this.categoriesForm.get('categories') as FormArray;
   }
 
+  ngOnInit(): void {
+    this._dataSubscriptionHandler = this.dataService.categories$.subscribe(
+      data => {
+        this._categories = data;
+        this.addBatchOfCategories().then(checkboxes => this.addCheckboxes(checkboxes));
+      }
+    );
+  }
+
+  onScrollingFinished() {
+    this.addBatchOfCategories().then(checkboxes => this.addCheckboxes(checkboxes));
+    console.log('Scroll finished!');
+  }
+
+  onCheckChange(event): void {
+    console.log(`event checked: ${event.target.checked}`);
+    this.categories[event.target.id].selected = !this.categories[event.target.id].selected;
+    console.log(`this: ${this.categories[event.target.id].selected}`);
+
+    this.sortForm(this.formCategories.value);
+    this.categories.sort( (a, b) => {
+      if (a.selected < b.selected) { return 1; }
+      if (a.selected > b.selected) { return -1; }
+
+      if (a.selected === b.selected) {
+        return a.name.toLowerCase().localeCompare(b.name.toLowerCase()); // localeCompare is the key.
+      }
+    });
+
+    console.log(this.categories);
+    console.log(this.formCategories);
+  }
+
+  onSubmit(formValue) {
+    const form = Object.assign({}, formValue, {
+      categories: formValue.categories.map((category, index) => {
+        return {
+          id: this.categories[index].id,
+          selected: category
+        };
+      })
+    });
+    console.warn(this.categoriesForm.value);
+  }
+
   // Tracking function
   categoryId(category: ProductCategory): number {
     if (!category) { return null; }
@@ -90,31 +135,20 @@ export class MultiselectComponent implements OnInit {
     }
   }
 
-  ngOnInit(): void {
-    this._dataSubscriptionHandler = this.dataService.categories$.subscribe(
-      data => {
-        this._categories = data;
-        this.addBatchOfCategories().then(checkboxes => this.addCheckboxes(checkboxes));
-      }
-    );
-  }
-
-  onScrollingFinished() {
-    this.addBatchOfCategories().then(checkboxes => this.addCheckboxes(checkboxes));
-    console.log('Scroll finished!');
-    // this.addCheckboxes();
-  }
-
-  onSubmit(formValue) {
-    const form = Object.assign({}, formValue, {
-      categories: formValue.categories.map((category, index) => {
-        return {
-          id: this.categories[index].id,
-          selected: category
-        };
-      })
+  sortForm(arrayToSort: Array<ProductCategory>) {
+    console.log(arrayToSort);
+    const sortedArray = arrayToSort.sort( (a, b) => {
+      if (a < b) { return 1; }
+      if (a > b) { return -1; }
+      return 0;
     });
-    console.warn(this.categoriesForm.value);
+
+    this.categoriesForm.patchValue({
+      categories: this.formCategories.value
+    });
+
+    // this.formCategories.setValue(this.formCategories.value);
+
   }
 
   // TODO: Implement onDestroy and unsubscribe
