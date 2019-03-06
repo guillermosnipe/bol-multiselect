@@ -1,4 +1,4 @@
-<form class="multiselect-form" [formGroup]="categoriesForm" (ngSubmit)="onSubmit()">
+<form class="multiselect-form" [formGroup]="categoriesForm" (ngSubmit)="onSubmit(categoriesForm.value)">
   <h3>Productgroep</h3>
   <input type="text" placeholder="Zoek op..." class="multiselect-form--search" tabindex="0"/>
   <ul class="multiselect-list" bolScrollTracker>

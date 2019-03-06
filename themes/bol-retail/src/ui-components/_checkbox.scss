@@ -33,6 +33,10 @@
   height: 0.75em;
   background-color: $primary-color;
 }
+
+[type="checkbox"]:focus + label::before {
+  outline: rgb(59, 153, 252) auto 5px;
+}
 /* checked mark aspect changes */
 [type="checkbox"]:not(:checked) + label:after {
   opacity: 0;

@@ -60,9 +60,20 @@ export class MultiselectComponent implements OnInit {
     );
   }
 
-  onSubmit() {
-    // TODO: Use EventEmitter with form value
+  onSubmit(formValue) {
+    const form = Object.assign({}, formValue, {
+      categories: formValue.categories.map( (category, index) => {
+        return {
+          id: this.categories[index].id,
+          selected: category
+        };
+      })
+    });
+
+    console.log(form);
     console.warn(this.categoriesForm.value);
+
   }
+
 
 }
