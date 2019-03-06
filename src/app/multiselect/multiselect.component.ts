@@ -37,31 +37,28 @@ export class MultiselectComponent implements OnInit {
     );
   }
 
-  onScrollingFinished() {
+  onScrollingFinished(): void {
     this.addBatchOfCategories().then(checkboxes => this.addCheckboxes(checkboxes));
     console.log('Scroll finished!');
   }
 
   onCheckChange(event): void {
-    console.log(`event checked: ${event.target.checked}`);
+    // Checking the opposite option.
     this.categories[event.target.id].selected = !this.categories[event.target.id].selected;
-    console.log(`this: ${this.categories[event.target.id].selected}`);
 
     this.sortForm(this.formCategories.value);
     this.categories.sort( (a, b) => {
       if (a.selected < b.selected) { return 1; }
       if (a.selected > b.selected) { return -1; }
 
+      // Both items are not selected. Then sort them by name.
       if (a.selected === b.selected) {
         return a.name.toLowerCase().localeCompare(b.name.toLowerCase()); // localeCompare is the key.
       }
     });
-
-    console.log(this.categories);
-    console.log(this.formCategories);
   }
 
-  onSubmit(formValue) {
+  onSubmit(formValue): void {
     const form = Object.assign({}, formValue, {
       categories: formValue.categories.map((category, index) => {
         return {
@@ -70,7 +67,9 @@ export class MultiselectComponent implements OnInit {
         };
       })
     });
-    console.warn(this.categoriesForm.value);
+    // console.warn(this.categoriesForm.value);
+    console.log( form.categories.filter( (category) => category.selected ));
+    // TODO: This method should return the selected ones.
   }
 
   // Tracking function
