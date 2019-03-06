@@ -10,7 +10,7 @@ import { CompileShallowModuleMetadata } from '@angular/compiler';
 })
 export class MultiselectComponent implements OnInit {
 
-  pageSize = 100;
+  _pageSize = 100;
   _page = 1;
   _categories: ProductCategory[];
   categories: ProductCategory[] = [];
@@ -32,10 +32,30 @@ export class MultiselectComponent implements OnInit {
     return category.id;
   }
 
-  getBatchOfCategories(page: number = this._page, pageSize: number = this.pageSize) {
-    this.categories = this._categories.filter((item, index) => index < page * pageSize);
+  getBatchOfCategories(page: number = this._page, _pageSize: number = this._pageSize) {
+
+    // There are no more elements to add. Exit
+    if (this._categories.length - this.calculateInterval(page) <= (_pageSize * -1 + 1) ) {
+      return false;
+    }
+
+    this.categories.push( ...this._categories.filter(
+      (item, index) =>
+          (page > 1) ?
+              index >= this.calculateElementToStartFrom(page, this._pageSize)
+                && index < this.calculateInterval(page) : index < this.calculateInterval(page)
+    ));
+
     this._page = this._page + 1;
     console.log(this.categories);
+  }
+
+  calculateInterval(page, pageSize = this._pageSize) {
+    return page * pageSize;
+  }
+
+  calculateElementToStartFrom(page = 1, pageSize = this._pageSize) {
+    return (page - 1) * pageSize;
   }
 
   addCheckboxes() {
@@ -43,6 +63,7 @@ export class MultiselectComponent implements OnInit {
     this.categories.map( category => this.formCategories.push(this.fb.control(false)));
   }
 
+  // not using it
   addCategories() {
     const categoriesArray = this.categories.map(category => {
       return this.fb.control(category.selected);
@@ -58,6 +79,12 @@ export class MultiselectComponent implements OnInit {
         this.addCheckboxes();
       }
     );
+  }
+
+  onScrollingFinished() {
+    this.getBatchOfCategories();
+    console.log('Scroll finished!');
+    //this.addCheckboxes();
   }
 
   onSubmit(formValue) {
