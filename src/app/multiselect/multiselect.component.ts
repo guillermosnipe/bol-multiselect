@@ -24,12 +24,11 @@ export class MultiselectComponent implements OnInit {
     });
   }
 
-  // TODO: Quite a confusing name. Adjust it to something more understandable.
-  get categories() {
+  get categories(): FormArray {
     return this.categoriesForm.get('categories') as FormArray;
   }
 
-  get searchCategoriesField() {
+  get searchCategoriesField(): FormControl {
     return this.categoriesForm.get('searchCategories') as FormControl;
   }
 
@@ -111,18 +110,18 @@ export class MultiselectComponent implements OnInit {
     return categoriesInterval;
   }
 
-  calculateCategoryToStartFrom(page = 1, pageSize = this._pageSize) {
+  calculateCategoryToStartFrom(page = 1, pageSize = this._pageSize): number {
     let result = 0;
     if (page > 1) { result = (page - 1) * pageSize; }
 
     return result;
   }
 
-  calculateCategoriesBatchLimit(page, pageSize = this._pageSize) {
+  calculateCategoriesBatchLimit(page, pageSize = this._pageSize): number {
     return page * pageSize;
   }
 
-  calculateCategoriesInterval(categoriesArray, page: number, pageSize: number = this._pageSize) {
+  calculateCategoriesInterval(categoriesArray, page: number): Array<number> {
     const start = this.calculateCategoryToStartFrom(page);
     let finish = this.calculateCategoriesBatchLimit(page);
 
@@ -132,7 +131,6 @@ export class MultiselectComponent implements OnInit {
   }
 
   addCheckboxes(checkboxesToAdd: Array<number> | null) {
-
     if (checkboxesToAdd === null) { return false; }
 
     const [start, end] = checkboxesToAdd;
