@@ -13,9 +13,9 @@ export class MultiselectComponent implements OnInit {
   // TODO: create an options object out of this...
   _pageSize = 100;
   _page = 1;
-  _categories: ProductCategory[];
+  _categoriesArray: ProductCategory[];
   _dataSubscriptionHandler: Subscription;
-  categories: ProductCategory[] = [];
+  categoriesArray: ProductCategory[] = [];
   categoriesForm: FormGroup;
 
   constructor(private dataService: MultiSelectService, private fb: FormBuilder) {
@@ -25,7 +25,7 @@ export class MultiselectComponent implements OnInit {
   }
 
   // TODO: Quite a confusing name. Adjust it to something more understandable.
-  get formCategories() {
+  get categories() {
     return this.categoriesForm.get('categories') as FormArray;
   }
 
@@ -37,7 +37,7 @@ export class MultiselectComponent implements OnInit {
     // TODO: Implement the catch in case that the request fails.
     this._dataSubscriptionHandler = this.dataService.categories$.subscribe(
       data => {
-        this._categories = data;
+        this._categoriesArray = data;
         this.addBatchOfCategories().then(checkboxes => this.addCheckboxes(checkboxes));
       }
     );
@@ -49,16 +49,15 @@ export class MultiselectComponent implements OnInit {
   }
 
   onSearchTermIntroduced(event): void {
-    console.log('a new search term has been introduced');
-    console.log(event);
+    console.log(`a new search term has been introduced: ${event}`);
   }
 
   onCheckChange(event): void {
     // Checking the opposite option.
-    this.categories[event.target.id].selected = !this.categories[event.target.id].selected;
+    this.categoriesArray[event.target.id].selected = !this.categoriesArray[event.target.id].selected;
 
-    this.sortForm(this.formCategories.value);
-    this.categories.sort( (a, b) => {
+    this.sortForm(this.categories.value);
+    this.categoriesArray.sort( (a, b) => {
       if (a.selected < b.selected) { return 1; }
       if (a.selected > b.selected) { return -1; }
 
@@ -73,7 +72,7 @@ export class MultiselectComponent implements OnInit {
     const form = Object.assign({}, formValue, {
       categories: formValue.categories.map((category, index) => {
         return {
-          id: this.categories[index].id,
+          id: this.categoriesArray[index].id,
           selected: category
         };
       })
@@ -94,21 +93,21 @@ export class MultiselectComponent implements OnInit {
     let categoriesInterval: Array<number>;
 
     // There are no more elements to add. Exit
-    if (this._categories.length - this.calculateCategoriesBatchLimit(page) <= (_pageSize * -1 + 1)) {
+    if (this._categoriesArray.length - this.calculateCategoriesBatchLimit(page) <= (_pageSize * -1 + 1)) {
       return null;
     }
 
-    this.categories.push(...this._categories.filter(
+    this.categoriesArray.push(...this._categoriesArray.filter(
       (item, index) =>
         (page > 1) ?
           index >= this.calculateCategoryToStartFrom(page, this._pageSize) && index < this.calculateCategoriesBatchLimit(page)
           : index < this.calculateCategoriesBatchLimit(page)
     ));
 
-    categoriesInterval = this.calculateCategoriesInterval(this.categories, page);
+    categoriesInterval = this.calculateCategoriesInterval(this.categoriesArray, page);
 
     this._page = this._page + 1;
-    console.log(this.categories);
+    console.log(this.categoriesArray);
     return categoriesInterval;
   }
 
@@ -137,16 +136,13 @@ export class MultiselectComponent implements OnInit {
     if (checkboxesToAdd === null) { return false; }
 
     const [start, end] = checkboxesToAdd;
-    console.log('addCheckboxes');
-    console.log(`start: ${start} end: ${end}`);
 
     for (let i = start; i < end; i = i + 1) {
-      this.formCategories.push(this.fb.control(this.categories[i].selected));
+      this.categories.push(this.fb.control(this.categoriesArray[i].selected));
     }
   }
 
   sortForm(arrayToSort: Array<ProductCategory>) {
-    console.log(arrayToSort);
     const sortedArray = arrayToSort.sort( (a, b) => {
       if (a < b) { return 1; }
       if (a > b) { return -1; }
@@ -154,7 +150,7 @@ export class MultiselectComponent implements OnInit {
     });
 
     this.categoriesForm.patchValue({
-      categories: this.formCategories.value
+      categories: sortedArray
     });
 
   }

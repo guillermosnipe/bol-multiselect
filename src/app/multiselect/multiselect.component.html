@@ -7,12 +7,12 @@
     placeholder="Zoek op..."></bol-search-box>
   <ul class="multiselect-list" bolScrollTracker (scrollingFinished)="onScrollingFinished($event)">
     <!-- Preloader -->
-    <li class="multiselect-form--preloader" *ngIf="formCategories.controls.length === 0">
+    <li class="multiselect-form--preloader" *ngIf="categories.controls.length === 0">
       <img src="assets/ajax-loader.gif" alt=""/>
     </li>
-    <li formArrayName="categories" *ngFor="let category of formCategories.controls; let i = index; trackBy: categoryId" class="multiselect-list--option">
+    <li formArrayName="categories" *ngFor="let category of categories.controls; let i = index; trackBy: categoryId" class="multiselect-list--option">
         <input id="{{ i }}" type="checkbox" [formControlName]="i" (change)="onCheckChange($event)"/>
-        <label for="{{ i }}">{{ categories[i].name }}</label>
+        <label for="{{ i }}">{{ categoriesArray[i].name }}</label>
     </li>
   </ul>
   <button class="btn-primary--large" type="submit">Toepassen</button>
