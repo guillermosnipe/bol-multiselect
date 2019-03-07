@@ -8,10 +8,14 @@ import { MultiselectComponent } from './multiselect.component';
 import { MultiSelectDataService } from './multiselect-data.service';
 import { ScrollTrackerDirective } from './directives/bolScrollTracker.directive';
 
+import { SearchBoxComponent } from './search-box/search-box.component';
+
+
 @NgModule({
   declarations: [
     MultiselectComponent,
-    ScrollTrackerDirective
+    ScrollTrackerDirective,
+    SearchBoxComponent
   ],
   imports: [
     CommonModule,

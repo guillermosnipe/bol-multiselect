@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MultiSelectService, ProductCategory } from './multiselect.service';
 import { FormBuilder, FormArray, FormControl, FormGroup } from '@angular/forms';
-import { CompileShallowModuleMetadata } from '@angular/compiler';
 import { Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'bol-multiselect',
@@ -24,11 +24,17 @@ export class MultiselectComponent implements OnInit {
     });
   }
 
+  // TODO: Quite a confusing name. Adjust it to something more understandable.
   get formCategories() {
     return this.categoriesForm.get('categories') as FormArray;
   }
 
+  get searchCategoriesField() {
+    return this.categoriesForm.get('searchCategories') as FormControl;
+  }
+
   ngOnInit(): void {
+    // TODO: Implement the catch in case that the request fails.
     this._dataSubscriptionHandler = this.dataService.categories$.subscribe(
       data => {
         this._categories = data;
@@ -40,6 +46,11 @@ export class MultiselectComponent implements OnInit {
   onScrollingFinished(): void {
     this.addBatchOfCategories().then(checkboxes => this.addCheckboxes(checkboxes));
     console.log('Scroll finished!');
+  }
+
+  onSearchTermIntroduced(event): void {
+    console.log('a new search term has been introduced');
+    console.log(event);
   }
 
   onCheckChange(event): void {
@@ -67,7 +78,7 @@ export class MultiselectComponent implements OnInit {
         };
       })
     });
-    // console.warn(this.categoriesForm.value);
+    // TODO: Reset the search field
     console.log( form.categories.filter( (category) => category.selected ));
     // TODO: This method should return the selected ones.
   }
@@ -145,8 +156,6 @@ export class MultiselectComponent implements OnInit {
     this.categoriesForm.patchValue({
       categories: this.formCategories.value
     });
-
-    // this.formCategories.setValue(this.formCategories.value);
 
   }
 

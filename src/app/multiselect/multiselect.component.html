@@ -1,8 +1,12 @@
 <form class="multiselect-form" [formGroup]="categoriesForm" (ngSubmit)="onSubmit(categoriesForm.value)">
   <h3>Productgroep</h3>
-  <input type="text" placeholder="Zoek op..." class="multiselect-form--search" tabindex="0"/>
+  <!-- Search box -->
+  <bol-search-box
+    (searchTermIntroduced)="onSearchTermIntroduced($event)"
+    customCssClasses="multiselect-form--search"
+    placeholder="Zoek op..."></bol-search-box>
   <ul class="multiselect-list" bolScrollTracker (scrollingFinished)="onScrollingFinished($event)">
-    <!-- TODO: Add a preloader -->
+    <!-- Preloader -->
     <li class="multiselect-form--preloader" *ngIf="formCategories.controls.length === 0">
       <img src="assets/ajax-loader.gif" alt=""/>
     </li>
