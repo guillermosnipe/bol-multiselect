@@ -4,8 +4,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'bol-search-box',
-  templateUrl: './search-box.component.html',
-  styleUrls: ['./search-box.component.scss']
+  templateUrl: './search-box.component.html'
 })
 export class SearchBoxComponent implements OnInit {
 

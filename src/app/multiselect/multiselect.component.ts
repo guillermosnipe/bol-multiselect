@@ -7,7 +7,6 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 @Component({
   selector: 'bol-multiselect',
   templateUrl: './multiselect.component.html',
-  styleUrls: ['./multiselect.component.scss']
 })
 export class MultiselectComponent implements OnInit {
   // TODO: create an options object out of this...
