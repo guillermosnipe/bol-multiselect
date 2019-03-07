@@ -2,11 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { MultiSelectService, ProductCategory } from './multiselect.service';
 import { FormBuilder, FormArray, FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'bol-multiselect',
-  templateUrl: './multiselect.component.html',
+  templateUrl: './multiselect.component.html'
 })
 export class MultiselectComponent implements OnInit {
   // TODO: create an options object out of this...

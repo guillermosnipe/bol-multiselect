@@ -4,7 +4,7 @@
   <bol-search-box
     (searchTermIntroduced)="onSearchTermIntroduced($event)"
     customCssClasses="multiselect-form--search"
-    placeholder="Zoek op..."></bol-search-box>
+    placeholder="Zoek op ..."></bol-search-box>
   <ul class="multiselect-list" bolScrollTracker (scrollingFinished)="onScrollingFinished($event)">
     <!-- Preloader -->
     <li class="multiselect-form--preloader" *ngIf="categories.controls.length === 0">
