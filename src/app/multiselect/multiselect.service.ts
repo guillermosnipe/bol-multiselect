@@ -24,7 +24,7 @@ export class MultiSelectService {
   constructor(private http: HttpClient) { }
 
   // URL to web api - mocked. Categories is the object present in the mock server file
-  private categoriesUrl = 'api/categories222';
+  private categoriesUrl = 'api/categories';
   readonly categories$ = this.getCategories().pipe(
                                 retryWhen(errors =>
                                   errors.pipe(

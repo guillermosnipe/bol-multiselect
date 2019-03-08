@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MultiSelectService, ProductCategory } from './multiselect.service';
 import { FormBuilder, FormArray, FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'bol-multiselect',
@@ -39,8 +40,7 @@ export class MultiselectComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // TODO: Implement the catch in case that the request fails.
-    this._dataSubscriptionHandler = this.dataService.categories$.subscribe(
+    this._dataSubscriptionHandler = this.dataService.categories$.pipe(take(1)).subscribe(
       data => {
         // Adding the rendered flag to check which of them was already rendered
         this._categoriesArray = data.map( (category) => Object.assign({}, category, { rendered: false }));
@@ -249,6 +249,4 @@ export class MultiselectComponent implements OnInit {
         }
       });
   }
-
-  // TODO: Implement onDestroy and unsubscribe
 }
