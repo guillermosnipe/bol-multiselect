@@ -1,4 +1,7 @@
-<input type="text"
-       class="{{customCssClasses}}"
-       placeholder="{{placeholder}}"
-       [formControl]="searchField">
+<label for="search-box" class="{{customCssClasses}}--label">Zoek op:</label>
+<input
+      id="search-box"
+      type="text"
+      class="{{customCssClasses}}"
+      placeholder="{{placeholder}}"
+      [formControl]="searchField">

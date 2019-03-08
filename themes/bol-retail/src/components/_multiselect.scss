@@ -30,6 +30,11 @@
   background-position: 95% center;
 }
 
+.multiselect-form--search--label {
+  text-indent: -9999px;
+  position: absolute;
+}
+
 .multiselect-list {
   padding: 10px 0;
   max-height: 280px;

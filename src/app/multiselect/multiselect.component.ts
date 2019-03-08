@@ -17,6 +17,8 @@ export class MultiselectComponent implements OnInit {
   categoriesArray: ProductCategory[] = [];
   categoriesForm: FormGroup;
 
+  // Getters. Form fields references
+
   get categories(): FormArray {
     return this.categoriesForm.get('categories') as FormArray;
   }
@@ -43,23 +45,24 @@ export class MultiselectComponent implements OnInit {
         // Adding the rendered flag to check which of them was already rendered
         this._categoriesArray = data.map( (category) => Object.assign({}, category, { rendered: false }));
         this.addBatchOfCategories().then(checkboxes => this.addCheckboxes(checkboxes));
-        console.warn(this._categoriesArray);
       }
     );
   }
 
+  // Scroll reached the end.
   onScrollingFinished(): void {
     // If search mode is off...
     if (this._searchedCategories.length === 0) {
       this.addBatchOfCategories().then(checkboxes => this.addCheckboxes(checkboxes));
-      console.log('Scroll finished!');
     }
   }
 
+  // Event handler that deals with a new search term
   onSearchTermIntroduced(event): void {
     this.renderSearchResultsList(event);
   }
 
+  // Checked event handler for the categories listing.
   onCheckChange(event): void {
     // Checking the opposite option.
     this.categoriesArray[event.target.id].selected = !this.categoriesArray[event.target.id].selected;
@@ -69,6 +72,7 @@ export class MultiselectComponent implements OnInit {
 
   }
 
+  // Checked event handler for the categories search listing.
   onSearchCheckChange(event): void {
     this.addCheckbox(event.target.id);
 
@@ -88,9 +92,7 @@ export class MultiselectComponent implements OnInit {
         };
       })
     });
-    // TODO: Reset the search field and the searchedCategoriesArray
     console.log( form.categories.filter( (category) => category.selected ));
-    // TODO: This method should return the selected ones.
   }
 
   // ngFor Tracking function
@@ -130,10 +132,10 @@ export class MultiselectComponent implements OnInit {
     categoriesInterval = this.calculateCategoriesInterval(this.categoriesArray, page);
 
     this._page = this._page + 1;
-    console.log(this.categoriesArray);
     return categoriesInterval;
   }
 
+  // Renders the search results list
   renderSearchResultsList(searchTerm: string) {
 
     this.cleanSearchResults(searchTerm);
@@ -148,6 +150,7 @@ export class MultiselectComponent implements OnInit {
     }
   }
 
+  // Cleans the search results
   cleanSearchResults(term: string | null = null) {
     // if the term is null
     if (term === null) {
@@ -163,8 +166,8 @@ export class MultiselectComponent implements OnInit {
 
   }
 
+  // Add an individual checkbox
   addCheckbox(categoryId) {
-    console.log(`looking for category id: ${categoryId}`);
     const [category] = this._categoriesArray.filter( (c) => c.id === +categoryId);
 
     const isInArray = this.categoriesArray.some((cat, index) => {
@@ -179,16 +182,14 @@ export class MultiselectComponent implements OnInit {
       // Selecting the category
       category.selected = true;
       category.rendered = true;
-      console.log(category);
       // Adding category
-      console.log(this.categoriesArray);
       this.categoriesArray.push(category);
-      console.log(this.categoriesArray);
       // Adding checkbox
       this.categories.push(this.fb.control(true));
     }
   }
 
+  // Add multiple checkboxes. Used with addCategoriesBatches
   addCheckboxes(checkboxesToAdd: Array<number> | null) {
     if (checkboxesToAdd === null) { return false; }
 
