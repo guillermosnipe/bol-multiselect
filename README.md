@@ -14,6 +14,15 @@ This exercise is all about developing a multiselect form control. Because of the
 
 The styles were applied in a theme that was created for this exercise "bol-retail"
 
+## Tests
+
+Run `npm test` to run the tests.
+
+What is being tested?
+
+- The ProductGroep form renders the right amount of categories
+- The render category has the proper name
+
 ## Questions?
 
 Send me an email: snipeglk@gmail.com. I'll be more than happy to help.
