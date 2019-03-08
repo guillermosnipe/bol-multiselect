@@ -12,6 +12,7 @@ export interface ProductCategory {
   id: number;
   name: string;
   selected: boolean;
+  rendered: boolean;
 }
 
 @Injectable({

@@ -10,10 +10,26 @@
     <li class="multiselect-form--preloader" *ngIf="categories.controls.length === 0">
       <img src="assets/ajax-loader.gif" alt=""/>
     </li>
-    <li formArrayName="categories" *ngFor="let category of categories.controls; let i = index; trackBy: categoryId" class="multiselect-list--option">
-        <input id="{{ i }}" type="checkbox" [formControlName]="i" (change)="onCheckChange($event)"/>
-        <label for="{{ i }}">{{ categoriesArray[i].name }}</label>
-    </li>
+    <!-- Search component results -->
+    <ng-container *ngIf="this.searchedCategories.controls.length > 0">
+      <li
+        formArrayName="searchedCategories"
+        *ngFor="let category of searchedCategories.controls; let i = index; trackBy: categoryId"
+        class="multiselect-list--option">
+        <input id="{{  _searchedCategories[i].id }}" type="checkbox" [formControlName]="i" (change)="onSearchCheckChange($event)"/>
+        <label for="{{ _searchedCategories[i].id }}">{{ _searchedCategories[i].name }}</label>
+      </li>
+    </ng-container>
+    <!-- Categories Listing -->
+    <ng-container *ngIf="this.searchedCategories.controls.length === 0">
+      <li
+        formArrayName="categories"
+        *ngFor="let category of categories.controls; let i = index; trackBy: categoryId"
+        class="multiselect-list--option">
+          <input id="{{ i }}" type="checkbox" [formControlName]="i" (change)="onCheckChange($event)"/>
+          <label for="{{ i }}">{{ categoriesArray[i].name }}</label>
+      </li>
+    </ng-container>
   </ul>
   <button class="btn-primary--large" type="submit">Toepassen</button>
 </form>

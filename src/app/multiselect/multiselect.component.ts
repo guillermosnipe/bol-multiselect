@@ -8,45 +8,56 @@ import { Subscription } from 'rxjs';
   templateUrl: './multiselect.component.html'
 })
 export class MultiselectComponent implements OnInit {
-  // TODO: create an options object out of this...
+
   _pageSize = 100;
   _page = 1;
   _categoriesArray: ProductCategory[];
+  _searchedCategories: ProductCategory[] | [] = [];
   _dataSubscriptionHandler: Subscription;
   categoriesArray: ProductCategory[] = [];
   categoriesForm: FormGroup;
 
-  constructor(private dataService: MultiSelectService, private fb: FormBuilder) {
-    this.categoriesForm = this.fb.group({
-      categories: this.fb.array([])
-    });
-  }
-
   get categories(): FormArray {
     return this.categoriesForm.get('categories') as FormArray;
+  }
+
+  get searchedCategories(): FormArray {
+    return this.categoriesForm.get('searchedCategories') as FormArray;
   }
 
   get searchCategoriesField(): FormControl {
     return this.categoriesForm.get('searchCategories') as FormControl;
   }
 
+  constructor(private dataService: MultiSelectService, private fb: FormBuilder) {
+    this.categoriesForm = this.fb.group({
+      categories: this.fb.array([]),
+      searchedCategories: this.fb.array([])
+    });
+  }
+
   ngOnInit(): void {
     // TODO: Implement the catch in case that the request fails.
     this._dataSubscriptionHandler = this.dataService.categories$.subscribe(
       data => {
-        this._categoriesArray = data;
+        // Adding the rendered flag to check which of them was already rendered
+        this._categoriesArray = data.map( (category) => Object.assign({}, category, { rendered: false }));
         this.addBatchOfCategories().then(checkboxes => this.addCheckboxes(checkboxes));
+        console.warn(this._categoriesArray);
       }
     );
   }
 
   onScrollingFinished(): void {
-    this.addBatchOfCategories().then(checkboxes => this.addCheckboxes(checkboxes));
-    console.log('Scroll finished!');
+    // If search mode is off...
+    if (this._searchedCategories.length === 0) {
+      this.addBatchOfCategories().then(checkboxes => this.addCheckboxes(checkboxes));
+      console.log('Scroll finished!');
+    }
   }
 
   onSearchTermIntroduced(event): void {
-    console.log(`a new search term has been introduced: ${event}`);
+    this.renderSearchResultsList(event);
   }
 
   onCheckChange(event): void {
@@ -54,15 +65,18 @@ export class MultiselectComponent implements OnInit {
     this.categoriesArray[event.target.id].selected = !this.categoriesArray[event.target.id].selected;
 
     this.sortForm(this.categories.value);
-    this.categoriesArray.sort( (a, b) => {
-      if (a.selected < b.selected) { return 1; }
-      if (a.selected > b.selected) { return -1; }
+    this.sortArrayByTwoFields(this.categoriesArray, 'selected', 'name');
 
-      // Both items are not selected. Then sort them by name.
-      if (a.selected === b.selected) {
-        return a.name.toLowerCase().localeCompare(b.name.toLowerCase()); // localeCompare is the key.
-      }
-    });
+  }
+
+  onSearchCheckChange(event): void {
+    this.addCheckbox(event.target.id);
+
+    // Sorting
+    this.sortForm(this.categories.value);
+    this.sortArrayByTwoFields(this.categoriesArray, 'selected', 'name');
+
+    this.cleanSearchResults();
   }
 
   onSubmit(formValue): void {
@@ -74,12 +88,12 @@ export class MultiselectComponent implements OnInit {
         };
       })
     });
-    // TODO: Reset the search field
+    // TODO: Reset the search field and the searchedCategoriesArray
     console.log( form.categories.filter( (category) => category.selected ));
     // TODO: This method should return the selected ones.
   }
 
-  // Tracking function
+  // ngFor Tracking function
   categoryId(category: ProductCategory): number {
     if (!category) { return null; }
     return category.id;
@@ -94,18 +108,99 @@ export class MultiselectComponent implements OnInit {
       return null;
     }
 
-    this.categoriesArray.push(...this._categoriesArray.filter(
-      (item, index) =>
-        (page > 1) ?
-          index >= this.calculateCategoryToStartFrom(page, this._pageSize) && index < this.calculateCategoriesBatchLimit(page)
-          : index < this.calculateCategoriesBatchLimit(page)
-    ));
+    const filteredCategories = this._categoriesArray.filter(
+      (item, index) => {
+        // It will only render categories that where not rendered before
+        if (item.rendered === false) {
+          if (page > 1) {
+              // eg: [100, 200]
+              return index >= this.calculateCategoryToStartFrom(page, this._pageSize) && index < this.calculateCategoriesBatchLimit(page);
+          } else {
+              // eg: [0, 100]
+              return index < this.calculateCategoriesBatchLimit(page);
+          }
+        } else {
+          return false;
+        }
+      }
+    );
+
+    this.categoriesArray.push(...filteredCategories);
 
     categoriesInterval = this.calculateCategoriesInterval(this.categoriesArray, page);
 
     this._page = this._page + 1;
     console.log(this.categoriesArray);
     return categoriesInterval;
+  }
+
+  renderSearchResultsList(searchTerm: string) {
+
+    this.cleanSearchResults(searchTerm);
+
+    // Filtering the matching categories
+    this._searchedCategories = this._categoriesArray.filter(
+                                    (category) => category.name.toLowerCase().indexOf(searchTerm) > -1 && !category.selected
+                            );
+    // renderSearchResultsList
+    for ( const category of this._searchedCategories) {
+      this.searchedCategories.push(this.fb.control(category.selected));
+    }
+  }
+
+  cleanSearchResults(term: string | null = null) {
+    // if the term is null
+    if (term === null) {
+      this._searchedCategories = [];
+    }
+
+    // clean the controls
+    while (this.searchedCategories.length !== 0) {
+      this.searchedCategories.removeAt(0);
+    }
+
+    // TODO: Remove search term
+
+  }
+
+  addCheckbox(categoryId) {
+    console.log(`looking for category id: ${categoryId}`);
+    const [category] = this._categoriesArray.filter( (c) => c.id === +categoryId);
+
+    const isInArray = this.categoriesArray.some((cat, index) => {
+      if (+categoryId === cat.id) {
+        this.categories.controls[index].setValue(true);
+        cat.selected = true;
+        return true;
+      }
+    });
+
+    if (!isInArray) {
+      // Selecting the category
+      category.selected = true;
+      category.rendered = true;
+      console.log(category);
+      // Adding category
+      console.log(this.categoriesArray);
+      this.categoriesArray.push(category);
+      console.log(this.categoriesArray);
+      // Adding checkbox
+      this.categories.push(this.fb.control(true));
+    }
+  }
+
+  addCheckboxes(checkboxesToAdd: Array<number> | null) {
+    if (checkboxesToAdd === null) { return false; }
+
+    const [start, end] = checkboxesToAdd;
+
+    for (let i = start; i < end; i = i + 1) {
+      // If the category is rendered, then don't add the checkbox.
+      if (this._categoriesArray[i].rendered !== true) {
+        this.categories.push(this.fb.control(this.categoriesArray[i].selected));
+        this._categoriesArray[i].rendered = true; // Marking the category as rendered
+      }
+    }
   }
 
   calculateCategoryToStartFrom(page = 1, pageSize = this._pageSize): number {
@@ -128,16 +223,6 @@ export class MultiselectComponent implements OnInit {
     return [start, finish];
   }
 
-  addCheckboxes(checkboxesToAdd: Array<number> | null) {
-    if (checkboxesToAdd === null) { return false; }
-
-    const [start, end] = checkboxesToAdd;
-
-    for (let i = start; i < end; i = i + 1) {
-      this.categories.push(this.fb.control(this.categoriesArray[i].selected));
-    }
-  }
-
   sortForm(arrayToSort: Array<ProductCategory>) {
     const sortedArray = arrayToSort.sort( (a, b) => {
       if (a < b) { return 1; }
@@ -149,6 +234,19 @@ export class MultiselectComponent implements OnInit {
       categories: sortedArray
     });
 
+  }
+
+  sortArrayByTwoFields(userArray: Array<any>, fieldA: string, fieldB: string) {
+      // The lines below can be refactored to use the sortArray method.
+      userArray.sort( (a, b) => {
+        if (a[fieldA] < b[fieldA]) { return 1; }
+        if (a[fieldA] > b[fieldA]) { return -1; }
+
+        // Both items are not selected. Then sort them by name.
+        if (a[fieldA] === b[fieldA]) {
+          return a[fieldB].toLowerCase().localeCompare(b[fieldB].toLowerCase()); // localeCompare is the key.
+        }
+      });
   }
 
   // TODO: Implement onDestroy and unsubscribe
