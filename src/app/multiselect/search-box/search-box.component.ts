@@ -23,7 +23,6 @@ export class SearchBoxComponent implements OnInit {
         distinctUntilChanged()
       )
       .subscribe(term => {
-        // console.log(this._categories.filter( category => !category.selected && category.name.indexOf(term) !== -1));
         if (term === '') { term = null; }
         this.searchTermIntroduced.emit(term);
       });

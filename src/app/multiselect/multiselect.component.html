@@ -15,7 +15,7 @@
       <li
         formArrayName="searchedCategories"
         *ngFor="let category of searchedCategories.controls; let i = index; trackBy: categoryId"
-        class="multiselect-list--option">
+        class="multiselect-list-search--option">
         <input id="{{  _searchedCategories[i].id }}" type="checkbox" [formControlName]="i" (change)="onSearchCheckChange($event)"/>
         <label for="{{ _searchedCategories[i].id }}">{{ _searchedCategories[i].name }}</label>
       </li>

@@ -66,10 +66,8 @@ export class MultiselectComponent implements OnInit {
   onCheckChange(event): void {
     // Checking the opposite option.
     this.categoriesArray[event.target.id].selected = !this.categoriesArray[event.target.id].selected;
-
     this.sortForm(this.categories.value);
     this.sortArrayByTwoFields(this.categoriesArray, 'selected', 'name');
-
   }
 
   // Checked event handler for the categories search listing.
@@ -79,13 +77,12 @@ export class MultiselectComponent implements OnInit {
     // Sorting
     this.sortForm(this.categories.value);
     this.sortArrayByTwoFields(this.categoriesArray, 'selected', 'name');
-
     this.cleanSearchResults();
   }
 
   onSubmit(formValue): void {
     const form = Object.assign({}, formValue, {
-      categories: formValue.categories.map((category, index) => {
+      categories: formValue.categories.map((category: ProductCategory, index: number) => {
         return {
           id: this.categoriesArray[index].id,
           selected: category

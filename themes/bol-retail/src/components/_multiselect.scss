@@ -42,7 +42,8 @@
   overflow-x: hidden;
 }
 
-.multiselect-list--option {
+.multiselect-list--option,
+.multiselect-list-search--option {
   margin-bottom: 24px;
   font-size: 0.9em;
   padding-left: 5px;
