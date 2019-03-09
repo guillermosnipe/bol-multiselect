@@ -23,6 +23,8 @@ What is being tested?
 - The ProductGroep form renders the right amount of categories
 - The render category has the proper name
 
+More tests on its way
+
 ## Questions?
 
 Send me an email: snipeglk@gmail.com. I'll be more than happy to help.
